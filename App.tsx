@@ -30,8 +30,19 @@ const UniversityInfoPage = lazy(() => import("./components/UniversityInfoPage").
 
 // Import data from separate files
 import { coursesData } from "./data/coursesData";
-import { eventsData } from "./data/eventsData";
+import { eventsData, type Event } from "./data/eventsData";
 import { sampleNotes, getAnnouncementsData } from "./data/sampleData";
+
+// Types
+type Announcement = {
+  id: string;
+  title: string;
+  content: string;
+  time: string;
+  priority: "high" | "medium" | "low";
+  category: string;
+  read: boolean;
+};
 
 import "./utils/errorHandler";
 
@@ -81,10 +92,10 @@ function AppContent() {
   
   // Data states
   const [courses] = useState(coursesData);
-  const [events, setEvents] = useState(eventsData);
-  const [announcements, setAnnouncements] = useState(getAnnouncementsData());
-  const [notifications, setNotifications] = useState([]);
-  const [recentActivity, setRecentActivity] = useState([]);
+  const [events, setEvents] = useState<Event[]>(eventsData);
+  const [announcements, setAnnouncements] = useState<Announcement[]>(getAnnouncementsData());
+  const [notifications, setNotifications] = useState<any[]>([]);
+  const [recentActivity, setRecentActivity] = useState<any[]>([]);
 
   // Initialize app
   useEffect(() => {
