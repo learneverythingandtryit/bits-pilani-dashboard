@@ -1,5 +1,18 @@
 // Events data separated for better performance
-export const eventsData = [
+export type EventType = "deadline" | "assignment" | "presentation" | "meeting" | "class" | "exam" | "holiday" | "viva" | "lab_assessment";
+
+export interface Event {
+  id: string;
+  title: string;
+  date: string;
+  time: string;
+  type: EventType;
+  description: string;
+  course?: string;
+  location?: string;
+}
+
+export const eventsData: Event[] = [
   // September 2025 - Academic activities
   {
     id: "1",
