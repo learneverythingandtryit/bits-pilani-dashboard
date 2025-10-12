@@ -2,12 +2,14 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } f
 import { Badge } from "./ui/badge";
 import { Megaphone } from "lucide-react";
 
-interface Announcement {
+export type AnnouncementPriority = "high" | "medium" | "low";
+
+export interface Announcement {
   id: string;
   title: string;
   content: string;
   time: string;
-  priority: "high" | "medium" | "low";
+  priority: AnnouncementPriority;
   category: string;
 }
 
@@ -17,7 +19,8 @@ interface AnnouncementsDialogProps {
   announcements: Announcement[];
 }
 
-const getPriorityColor = (priority: string) => {
+// Ensure priority is one of the allowed literal types
+const getPriorityColor = (priority: AnnouncementPriority) => {
   switch (priority) {
     case "high":
       return "bg-red-500";
@@ -25,11 +28,10 @@ const getPriorityColor = (priority: string) => {
       return "bg-orange-500";
     case "low":
       return "bg-green-500";
-    default:
-      return "bg-gray-500";
   }
 };
 
+// Map categories to colors
 const getCategoryColor = (category: string) => {
   switch (category) {
     case "Academic":
@@ -45,7 +47,17 @@ const getCategoryColor = (category: string) => {
   }
 };
 
+// Validate announcements to ensure type safety
+const validateAnnouncements = (announcements: any[]): Announcement[] => {
+  return announcements.map((a) => ({
+    ...a,
+    priority: ["high", "medium", "low"].includes(a.priority) ? (a.priority as AnnouncementPriority) : "low",
+  }));
+};
+
 export function AnnouncementsDialog({ isOpen, onClose, announcements }: AnnouncementsDialogProps) {
+  const validatedAnnouncements = validateAnnouncements(announcements);
+
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-4xl max-h-[80vh] overflow-hidden">
@@ -60,7 +72,7 @@ export function AnnouncementsDialog({ isOpen, onClose, announcements }: Announce
         </DialogHeader>
         
         <div className="overflow-y-auto pr-2 space-y-4 max-h-[60vh]">
-          {announcements.map((announcement) => (
+          {validatedAnnouncements.map((announcement) => (
             <div key={announcement.id} className="border border-gray-200 rounded-lg p-4 bg-white hover:shadow-md transition-shadow">
               <div className="flex items-start justify-between gap-4 mb-3">
                 <h3 className="font-semibold text-[#0F172A] text-base leading-tight">
@@ -70,7 +82,10 @@ export function AnnouncementsDialog({ isOpen, onClose, announcements }: Announce
                   <Badge variant="secondary" className={getCategoryColor(announcement.category)}>
                     {announcement.category}
                   </Badge>
-                  <div className={`w-2 h-2 rounded-full ${getPriorityColor(announcement.priority)}`} title={`${announcement.priority} priority`}></div>
+                  <div
+                    className={`w-2 h-2 rounded-full ${getPriorityColor(announcement.priority)}`}
+                    title={`${announcement.priority} priority`}
+                  ></div>
                 </div>
               </div>
               
