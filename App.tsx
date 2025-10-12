@@ -8,9 +8,7 @@ import { DashboardStats } from "./components/DashboardStats";
 import { CourseCard } from "./components/CourseCard";
 import { RecentlyAccessed } from "./components/RecentlyAccessed";
 import { AIAssistant } from "./components/AIAssistant_Fixed";
-import { AnnouncementsWidget } from "./components/widgets/AnnouncementsWidget";
 import { ProfileEditDialog } from "./components/ProfileEditDialog";
-import { AnnouncementsDialog } from "./components/AnnouncementsDialog";
 import { SchedulePopup } from "./components/SchedulePopup";
 import { Button } from "./components/ui/button";
 import { cn } from "./components/ui/utils";
@@ -31,18 +29,7 @@ const UniversityInfoPage = lazy(() => import("./components/UniversityInfoPage").
 // Import data from separate files
 import { coursesData } from "./data/coursesData";
 import { eventsData, type Event } from "./data/eventsData";
-import { sampleNotes, getAnnouncementsData } from "./data/sampleData";
-
-// Types
-type Announcement = {
-  id: string;
-  title: string;
-  content: string;
-  time: string;
-  priority: "high" | "medium" | "low";
-  category: string;
-  read: boolean;
-};
+import { sampleNotes } from "./data/sampleData";
 
 import "./utils/errorHandler";
 
@@ -76,7 +63,6 @@ function AppContent() {
   
   // Dialog states
   const [isProfileDialogOpen, setIsProfileDialogOpen] = useState(false);
-  const [showAnnouncementsDialog, setShowAnnouncementsDialog] = useState(false);
   const [showSchedulePopup, setShowSchedulePopup] = useState(false);
   
   // Page navigation states
@@ -93,7 +79,6 @@ function AppContent() {
   // Data states
   const [courses] = useState(coursesData);
   const [events, setEvents] = useState<Event[]>(eventsData);
-  const [announcements, setAnnouncements] = useState<Announcement[]>(getAnnouncementsData());
   const [notifications, setNotifications] = useState<any[]>([]);
   const [recentActivity, setRecentActivity] = useState<any[]>([]);
 
@@ -271,18 +256,8 @@ function AppContent() {
   }, [handleCourseClick, handleNoteClick, trackActivity]);
 
   const handleNotificationClick = (id: string) => {
-    const announcement = announcements.find(a => a.id === id);
-    if (announcement) {
-      trackActivity({
-        id: `announcement-${id}`,
-        title: announcement.title,
-        type: 'announcement',
-        icon: 'Bell'
-      });
-      setAnnouncements(prev => 
-        prev.map(ann => ann.id === id ? { ...ann, read: true } : ann)
-      );
-    }
+    // Notifications handling - simplified without announcements
+    console.log('Notification clicked:', id);
   };
 
   // Loading state
@@ -305,7 +280,6 @@ function AppContent() {
   // Shared header props
   const headerProps = {
     onLogout: handleLogout,
-    announcements,
     notifications,
     onNotificationClick: handleNotificationClick,
     onThemeToggle: handleThemeToggle,
@@ -516,13 +490,6 @@ function AppContent() {
                   />
                 </div>
 
-                <div className="mb-8">
-                  <AnnouncementsWidget 
-                    onViewAll={() => setShowAnnouncementsDialog(true)} 
-                    announcements={announcements}
-                  />
-                </div>
-
                 <DashboardStats 
                   courses={courses} 
                   onCompletedCoursesClick={() => setShowCompletedCourses(true)}
@@ -629,7 +596,7 @@ function AppContent() {
         courses={courses}
         userName={userName}
         userProfile={userProfile}
-        announcements={announcements}
+        announcements={[]}
         notes={sampleNotes}
         libraryItems={[]}
       />
@@ -646,12 +613,6 @@ function AppContent() {
           localStorage.setItem("userProfile", JSON.stringify(updatedProfile));
           localStorage.setItem("userName", updatedProfile.name);
         }}
-      />
-      
-      <AnnouncementsDialog
-        isOpen={showAnnouncementsDialog}
-        onClose={() => setShowAnnouncementsDialog(false)}
-        announcements={announcements}
       />
 
       <SchedulePopup
