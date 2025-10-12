@@ -56,7 +56,6 @@ export function LoginPage({ onLogin }: LoginPageProps) {
       {/* University Illustration - Bottom Right Corner */}
       <div className="fixed bottom-20 right-4 z-10 hidden sm:block">
         <img
-          src={universityIllustration}
           alt="University Innovation Illustration"
           className="w-56 h-auto object-contain opacity-100 px-[0px] py-[-14px] mx-[0px] my-[-32px]"
         />
