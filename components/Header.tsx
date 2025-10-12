@@ -74,7 +74,7 @@ interface SearchResult {
 
 interface HeaderProps {
   onLogout?: () => void;
-  announcements?: Array<{ id: string; title: string; content: string; time: string; priority: "high" | "medium" | "low" | string; category: string; read: boolean; }>;
+  announcements?: Array<{ id: string; title: string; content: string; time: string; priority: "high" | "medium" | "low"; category: string; read: boolean; }>;
   notifications?: Array<{ id: string; title: string; message: string; time: string; read: boolean; }>;
   onNotificationClick?: (id: string) => void;
   onThemeToggle?: () => void;
