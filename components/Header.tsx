@@ -32,8 +32,13 @@ interface Note {
   title: string;
   course: string;
   content: string;
-  category: string;
-  date: string;
+  category?: string;
+  date?: string;
+  tags?: string;
+  createdAt?: string;
+  lastModified?: string;
+  favorite?: boolean;
+  files?: any[];
 }
 
 interface Event {
@@ -41,8 +46,10 @@ interface Event {
   title: string;
   date: string;
   time: string;
-  type: string;
+  type: "deadline" | "class" | "presentation" | "meeting" | "lab_assessment" | "assignment" | "exam" | "holiday" | "viva" | string;
   description?: string;
+  course?: string;
+  location?: string;
 }
 
 interface LibraryItem {
@@ -67,7 +74,7 @@ interface SearchResult {
 
 interface HeaderProps {
   onLogout?: () => void;
-  announcements?: Array<{ id: string; title: string; content: string; time: string; priority: string; category: string; read: boolean; }>;
+  announcements?: Array<{ id: string; title: string; content: string; time: string; priority: "high" | "medium" | "low" | string; category: string; read: boolean; }>;
   notifications?: Array<{ id: string; title: string; message: string; time: string; read: boolean; }>;
   onNotificationClick?: (id: string) => void;
   onThemeToggle?: () => void;
