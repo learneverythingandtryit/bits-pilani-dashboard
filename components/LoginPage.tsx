@@ -15,8 +15,6 @@ import {
 } from "./ui/dialog";
 import { ForgotPasswordPage } from "./ForgotPasswordPage";
 import { ImageWithFallback } from "./figma/ImageWithFallback";
-import wilpLogo from "figma:asset/96b0fcc34a2793c7a806154c040a98a942e164fe.png";
-import universityIllustration from "figma:asset/4c1138e98159f089b623f89f58dbc4ff3f08c777.png";
 
 interface LoginPageProps {
   onLogin: (email: string, password: string) => void;
