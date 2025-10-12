@@ -1,4 +1,3 @@
-import bitsLogo from 'figma:asset/d3c8c11311a55cbf5d0dda79bd6ff4204297115d.png';
 import { useState } from "react";
 import { Eye, EyeOff, Instagram, Facebook, Linkedin, Twitter } from "lucide-react";
 import { Button } from "./ui/button";
