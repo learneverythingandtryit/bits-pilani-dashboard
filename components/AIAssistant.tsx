@@ -641,7 +641,7 @@ Could you try rephrasing your question using one of these formats? I'm here to h
       {/* Chat Window */}
       <AnimatePresence>
         {isExpanded && (
-          <motion.div
+          <div
             initial={{ opacity: 0, scale: 0.8, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.8, y: 20 }}
@@ -722,13 +722,13 @@ Could you try rephrasing your question using one of these formats? I'm here to h
                 </div>
               </div>
             </Card>
-          </motion.div>
+          </div>
         )}
       </AnimatePresence>
 
       {/* Floating Action Button */}
       <div className="fixed bottom-6 right-6 z-50">
-        <motion.div
+        <div
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
         >
@@ -748,7 +748,7 @@ Could you try rephrasing your question using one of these formats? I'm here to h
               </>
             )}
           </Button>
-        </motion.div>
+        </div>
       </div>
     </>
   );
