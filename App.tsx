@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, Suspense, lazy } from "react";
-import { Grid, List, X } from "lucide-react";
+import { Grid, List } from "lucide-react";
 import { LoginPage } from "./components/LoginPage";
 import { Header } from "./components/Header";
 import { Sidebar } from "./components/Sidebar";
@@ -35,8 +35,8 @@ import { sampleNotes, getAnnouncementsData } from "./data/sampleData";
 
 import "./utils/errorHandler";
 
-// Import default profile picture
-import defaultProfilePicture from 'figma:asset/4d1244c8cd23f93c1a9d40fe9c4df8756afecddf.png';
+// Default profile picture - using a placeholder
+const defaultProfilePicture = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"%3E%3Crect fill="%23191f5e" width="100" height="100"/%3E%3Ctext x="50" y="50" text-anchor="middle" dy=".3em" fill="white" font-size="40" font-family="Arial"%3EHS%3C/text%3E%3C/svg%3E';
 
 // Default user profile
 const DEFAULT_USER_PROFILE = {
@@ -152,7 +152,7 @@ function AppContent() {
   }, [userProfile.name, isLoggedIn, userName]);
 
   // Handlers
-  const handleLogin = useCallback((name: string, password: string) => {
+  const handleLogin = useCallback((_name: string, _password: string) => {
     // Always use the default profile name, not the login name
     const initialProfile = { ...DEFAULT_USER_PROFILE };
     setUserName(DEFAULT_USER_PROFILE.name);
@@ -186,7 +186,7 @@ function AppContent() {
       timestamp: Date.now()
     };
 
-    setRecentActivity(prev => {
+    setRecentActivity((prev: any) => {
       const filtered = prev.filter((existing: any) => existing.id !== item.id);
       const updated = [activityItem, ...filtered].slice(0, 10);
       localStorage.setItem("recentActivity", JSON.stringify(updated));
