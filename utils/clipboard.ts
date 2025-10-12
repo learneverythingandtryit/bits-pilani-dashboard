@@ -257,11 +257,7 @@ export async function copyWithFeedback(
     }
     return true;
   } else {
-    // For development: show more detailed error
-    if (process.env.NODE_ENV === 'development') {
-      console.debug('Clipboard operation failed (this is normal in some environments):', result.error);
-    }
-    
+    console.debug('Clipboard operation failed (this is normal in some environments):', result.error);
     // User-friendly error handling - no error toast, just inform user of alternative
     toast.error('Unable to copy automatically. Please manually select and copy the text.');
     return false;
