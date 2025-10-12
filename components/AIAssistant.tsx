@@ -4,7 +4,6 @@ import { Button } from "./ui/button";
 import { Card } from "./ui/card";
 import { Input } from "./ui/input";
 import { Badge } from "./ui/badge";
-import { motion, AnimatePresence } from "motion/react";
 
 interface AIAssistantProps {
   events?: Array<{
