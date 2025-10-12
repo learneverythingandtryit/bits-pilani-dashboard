@@ -1,4 +1,4 @@
-# 🎓 BITS Pilani Student Dashboard
+# 🎓 BITS Pilani Student Dashboard 
 
 A modern, minimal, and AI-powered student dashboard interface for BITS Pilani, built with React, TypeScript, and Tailwind CSS v4.
 
