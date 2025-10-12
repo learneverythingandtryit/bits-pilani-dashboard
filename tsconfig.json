@@ -27,7 +27,7 @@
     },
     
     /* Types */
-    "types": ["vite/client", "node"]
+    "types": ["vite/client"]
   },
   "include": ["**/*.ts", "**/*.tsx"],
   "exclude": ["node_modules", "dist", "supabase/**/*", "public/**/*.tsx", "server/**/*"]
