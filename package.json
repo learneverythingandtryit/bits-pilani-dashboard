@@ -41,7 +41,7 @@
     "@radix-ui/react-tooltip": "^1.1.8",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
-    "tailwind-merge": "^2.7.0",
+    "tailwind-merge": "^2.6.0",
     "cmdk": "^1.0.4",
     "vaul": "^1.1.2",
     "embla-carousel-react": "^8.6.0",
