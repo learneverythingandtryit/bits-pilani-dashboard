@@ -1,6 +1,0 @@
-# Allow all robots
-User-agent: *
-Allow: /
-
-# Sitemap
-Sitemap: https://bits-pilani-dashboard.vercel.app/sitemap.xml
