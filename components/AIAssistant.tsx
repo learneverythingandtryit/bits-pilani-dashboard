@@ -639,14 +639,9 @@ Could you try rephrasing your question using one of these formats? I'm here to h
   return (
     <>
       {/* Chat Window */}
-      <AnimatePresence>
         {isExpanded && (
           <div
-            initial={{ opacity: 0, scale: 0.8, y: 20 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.8, y: 20 }}
-            transition={{ duration: 0.2 }}
-            className="fixed bottom-24 right-6 z-40"
+            className="fixed bottom-24 right-6 z-40 transition-all duration-200"
           >
             <Card className="w-80 sm:w-96 h-[500px] sm:h-[550px] flex flex-col shadow-2xl border-university-border bg-white">
               {/* Header */}
@@ -724,14 +719,10 @@ Could you try rephrasing your question using one of these formats? I'm here to h
             </Card>
           </div>
         )}
-      </AnimatePresence>
 
       {/* Floating Action Button */}
       <div className="fixed bottom-6 right-6 z-50">
-        <div
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-        >
+        <div className="hover:scale-105 active:scale-95 transition-transform">
           <Button
             onClick={() => setIsExpanded(!isExpanded)}
             className="w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-university-primary hover:bg-university-secondary shadow-lg transition-all duration-300 relative"
