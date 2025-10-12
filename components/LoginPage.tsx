@@ -67,7 +67,6 @@ export function LoginPage({ onLogin }: LoginPageProps) {
           <div className="text-center mb-12">
             <div className="w-full max-w-sm mx-auto mb-8">
               <ImageWithFallback
-                src={bitsLogo}
                 alt="BITS Pilani Work Integrated Learning Programmes"
                 className="w-full h-auto object-contain max-w-sm mx-auto"
               />
