@@ -83,8 +83,8 @@ function AppContent() {
   const [courses] = useState(coursesData);
   const [events, setEvents] = useState(eventsData);
   const [announcements, setAnnouncements] = useState(getAnnouncementsData());
-  const [notifications, setNotifications] = useState([]);
-  const [recentActivity, setRecentActivity] = useState([]);
+  const [notifications, setNotifications] = useState<any[]>([]);
+  const [recentActivity, setRecentActivity] = useState<any[]>([]);
 
   // Initialize app
   useEffect(() => {

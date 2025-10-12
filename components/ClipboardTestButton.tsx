@@ -3,7 +3,7 @@ import { Button } from './ui/button';
 import { Copy, Check, Bug } from 'lucide-react';
 import { copyWithFeedback } from '../utils/clipboard';
 import { runClipboardDiagnostics } from '../utils/clipboardTest';
-import { toast } from 'sonner@2.0.3';
+import { toast } from 'sonner';
 
 interface ClipboardTestButtonProps {
   className?: string;

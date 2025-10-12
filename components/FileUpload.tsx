@@ -3,7 +3,7 @@ import { Upload, X, File, Image, FileText, AlertCircle, CheckCircle2 } from "luc
 import { Button } from "./ui/button";
 import { Card, CardContent } from "./ui/card";
 import { Progress } from "./ui/progress";
-import { toast } from "sonner@2.0.3";
+import { toast } from "sonner";
 import { projectId, publicAnonKey } from "../utils/supabase/info";
 
 interface FileUploadProps {
