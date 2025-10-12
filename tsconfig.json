@@ -25,10 +25,10 @@
     "paths": {
       "@/*": ["./*"]
     },
-
-    /* Types — only vite/client, remove node */
+    
+    /* Types */
     "types": ["vite/client"]
   },
   "include": ["**/*.ts", "**/*.tsx"],
-  "exclude": ["node_modules", "dist", "supabase/**/*", "public/**/*.tsx", "server/**/*"]
+  "exclude": ["node_modules", "dist", "supabase/**/*", "public/**/*", "server/**/*"]
 }
