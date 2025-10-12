@@ -33,9 +33,6 @@ import { sampleNotes } from "./data/sampleData";
 
 import "./utils/errorHandler";
 
-// Import default profile picture
-import defaultProfilePicture from 'figma:asset/4d1244c8cd23f93c1a9d40fe9c4df8756afecddf.png';
-
 // Default user profile
 const DEFAULT_USER_PROFILE = {
   name: "HARI HARA SUDHAN",
@@ -44,7 +41,7 @@ const DEFAULT_USER_PROFILE = {
   phone: "+91 9876543210",
   course: "B.Tech Computer Science",
   semester: "4th Semester",
-  avatar: defaultProfilePicture
+  avatar: "https://api.dicebear.com/7.x/initials/svg?seed=HARI+HARA+SUDHAN&backgroundColor=191f5e&textColor=ffffff"
 };
 
 function AppContent() {
