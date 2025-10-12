@@ -1,4 +1,3 @@
-import image_7f13a12b6e7cf3d6a516fe74feab5ad5b5053146 from 'figma:asset/7f13a12b6e7cf3d6a516fe74feab5ad5b5053146.png';
 import { Bell, Search, LogOut, User, Settings, Sun, Moon, BookOpen, FileText, Calendar, Download, X, Menu } from "lucide-react";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
@@ -342,12 +341,14 @@ export function Header({
           <Menu className="w-4 h-4 xs:w-5 xs:h-5" />
         </Button>
         
-        <ImageWithFallback 
-          src={image_7f13a12b6e7cf3d6a516fe74feab5ad5b5053146}
-          alt="BITS Pilani Logo"
-          className="h-6 xs:h-8 sm:h-10 w-auto object-contain max-w-[120px] xs:max-w-none cursor-pointer"
+        <div 
+          className="cursor-pointer flex items-center gap-2"
           onClick={onLogoClick}
-        />
+        >
+          <div className="text-white font-bold text-sm xs:text-base sm:text-lg">
+            BITS Pilani
+          </div>
+        </div>
       </div>
 
       {/* Search Bar - Hidden on small mobile, visible on larger screens */}
