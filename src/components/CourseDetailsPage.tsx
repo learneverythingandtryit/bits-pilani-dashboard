@@ -8,7 +8,7 @@ import { Progress } from "./ui/progress";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs";
 import { Input } from "./ui/input";
 import { Textarea } from "./ui/textarea";
-import { toast } from "sonner@2.0.3";
+//import { toast } from "sonner@2.0.3";
 import { Toaster } from "./ui/sonner";
 
 interface Course {
