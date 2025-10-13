@@ -321,7 +321,7 @@ html, body {
   }
   
   /* Hide user text on iPhone SE to save space */
-  .university-header .hidden.sm\\:block {
+  .university-header .hidden.sm\:block {
     display: none !important;
   }
   
