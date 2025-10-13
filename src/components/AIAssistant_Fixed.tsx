@@ -80,10 +80,14 @@ interface AIAssistantProps {
   }>;
 }
 
-export function AIAssistant({ 
-  events = [], 
-  courses = [], 
-  userName = "Student", 
+// Helper function to check if a string contains any keyword
+const containsAny = (text: string, keywords: string[]) =>
+  keywords.some(k => text.includes(k));
+
+export function AIAssistant({
+  events = [],
+  courses = [],
+  userName = "Student",
   userProfile,
   announcements = [],
   notes = [],
@@ -91,182 +95,105 @@ export function AIAssistant({
 }: AIAssistantProps) {
   const [isExpanded, setIsExpanded] = useState(false);
   const [message, setMessage] = useState("");
-  const [messages, setMessages] = useState(() => {
-    return [{
+  const [messages, setMessages] = useState(() => [
+    {
       id: "initial-1",
       type: "assistant",
       content: `Hello! I'm BITS-Bot, your intelligent academic assistant. How can I help you today?`,
       timestamp: "Just now"
-    }];
-  });
-
-  useEffect(() => {
-    const getInitialDisplayName = () => {
-      if (userProfile?.name && userProfile.name.trim() && userProfile.name !== "Student") {
-        return userProfile.name.trim();
-      }
-      if (userName && userName.trim() && userName !== "Student") {
-        return userName.trim();
-      }
-      return null;
-    };
-
-    const displayName = getInitialDisplayName();
-    
-    if (displayName) {
-      setMessages([
-        {
-          id: "initial-1",
-          type: "assistant",
-          content: `Hello ${displayName}! I'm BITS-Bot, your intelligent academic assistant. How can I help you today?`,
-          timestamp: "Just now"
-        }
-      ]);
     }
-  }, [userName, userProfile?.name]);
-  
+  ]);
+
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  };
+  // Determine display name
+  const displayName =
+    userProfile?.name?.trim() && userProfile.name !== "Student"
+      ? userProfile.name
+      : userName?.trim() && userName !== "Student"
+      ? userName
+      : "Student";
 
+  // Initialize greeting with display name
   useEffect(() => {
-    scrollToBottom();
+    setMessages([
+      {
+        id: "initial-1",
+        type: "assistant",
+        content: `Hello ${displayName}! I'm BITS-Bot, your intelligent academic assistant. How can I help you today?`,
+        timestamp: "Just now"
+      }
+    ]);
+  }, [displayName]);
+
+  // Scroll to bottom on new message
+  useEffect(() => {
+    setTimeout(() => messagesEndRef.current?.scrollIntoView({ behavior: "smooth" }), 50);
   }, [messages]);
 
+  // AI Response Generator
   const generateAIResponse = (userMessage: string) => {
     const lowerMessage = userMessage.toLowerCase().trim();
-    
-    const today = new Date();
-    const todayStr = today.toISOString().split('T')[0];
-    
-    const getDisplayName = () => {
-      if (userProfile?.name && userProfile.name.trim() && userProfile.name !== "Student") {
-        return userProfile.name.trim();
-      }
-      if (userName && userName.trim() && userName !== "Student") {
-        return userName.trim();
-      }
-      return "Student";
-    };
+    const todayStr = new Date().toISOString().split("T")[0];
 
-    // Enhanced keyword detection - more flexible
-    const containsAny = (text: string, keywords: string[]) => {
-      return keywords.some(keyword => text.includes(keyword));
-    };
-
-    // ==================== NEW: BEHAVIOR RULES IMPLEMENTATION ====================
-    
-    // Define website-related keywords and topics
-    const websiteRelatedKeywords = {
-      // Login & Authentication
-      login: ['log in', 'login', 'sign in', 'signin', 'password', 'account', 'register', 'forgot password'],
-      
-      // Academic - Courses
-      courses: ['course', 'courses', 'subject', 'subjects', 'class', 'classes', 'semester', 'study', 'studying', 'enrolled', 'registration'],
-      
-      // Academic - Grades & Performance
-      grades: ['grade', 'grades', 'mark', 'marks', 'score', 'scores', 'result', 'results', 'performance', 'progress', 'cgpa', 'gpa', 'percentage'],
-      
-      // Schedule & Events
-      schedule: ['event', 'events', 'schedule', 'deadline', 'deadlines', 'today', 'tomorrow', 'week', 'due', 'calendar', 'exam', 'exams', 'test', 'tests', 'quiz', 'quizzes', 'assignment', 'assignments'],
-      
-      // Content & Materials
-      content: ['note', 'notes', 'library', 'book', 'books', 'material', 'materials', 'resource', 'resources', 'download', 'upload', 'file', 'files', 'document', 'documents', 'pdf', 'ppt', 'slide', 'slides'],
-      
+    // Keywords
+    const websiteKeywords = [
+      // Login
+      "log in","login","sign in","signin","password","account","register","forgot password",
+      // Courses
+      "course","courses","subject","subjects","class","classes","semester","study","studying","enrolled","registration",
+      // Grades
+      "grade","grades","mark","marks","score","scores","result","results","performance","progress","cgpa","gpa","percentage",
+      // Schedule
+      "event","events","schedule","deadline","deadlines","today","tomorrow","week","due","calendar","exam","exams","test","tests","quiz","quizzes","assignment","assignments",
+      // Notes & Materials
+      "note","notes","library","book","books","material","materials","resource","resources","download","upload","file","files","document","documents","pdf","ppt","slide","slides",
       // Communication
-      communication: ['announcement', 'announcements', 'news', 'notification', 'notifications', 'update', 'updates', 'notice', 'notices', 'message', 'messages'],
-      
-      // Profile & Personal
-      profile: ['my name', 'who am i', 'my profile', 'profile', 'my email', 'my phone', 'contact', 'my info', 'my details', 'account details'],
-      
-      // Navigation & Features
-      navigation: ['dashboard', 'home', 'page', 'tab', 'menu', 'navigate', 'go to', 'show me', 'find', 'search', 'where is', 'how do i', 'how to', 'what is'],
-      
-      // BITS Pilani specific
-      bits: ['bits', 'pilani', 'wilp', 'university', 'campus', 'instructor', 'professor', 'teacher', 'tutor', 'faculty'],
-      
-      // Portal features
-      features: ['e-learn', 'elearn', 'portal', 'system', 'platform', 'website', 'app', 'application']
-    };
+      "announcement","announcements","news","notification","notifications","update","updates","notice","notices","message","messages",
+      // Profile
+      "my name","who am i","my profile","profile","my email","my phone","contact","my info","my details","account details",
+      // Navigation
+      "dashboard","home","page","tab","menu","navigate","go to","show me","find","search","where is","how do i","how to","what is",
+      // BITS specific
+      "bits","pilani","wilp","university","campus","instructor","professor","teacher","tutor","faculty",
+      // Portal
+      "e-learn","elearn","portal","system","platform","website","app","application",
+      // Greetings
+      "hi","hello","hey","help","assist","what can you","who are you","thanks","thank you"
+    ];
 
-    // Check if message is website-related
-    const isWebsiteRelated = () => {
-      // Check all keyword categories
-      for (const category of Object.values(websiteRelatedKeywords)) {
-        if (containsAny(lowerMessage, category)) {
-          return true;
-        }
-      }
-      
-      // Also consider greetings and help as website-related
-      const basicInteractions = ['hi', 'hello', 'hey', 'help', 'assist', 'what can you', 'who are you', 'thanks', 'thank you'];
-      if (containsAny(lowerMessage, basicInteractions)) {
-        return true;
-      }
-      
-      return false;
-    };
+    const isWebsiteRelated = containsAny(lowerMessage, websiteKeywords);
 
-    // OUT-OF-SCOPE HANDLER
-    if (!isWebsiteRelated()) {
-      // Check for common out-of-scope topics
+    // Out-of-scope check
+    if (!isWebsiteRelated) {
       const outOfScopePatterns = [
-        // Math/calculations
-        /\d+\s*[\+\-\*\/×÷]\s*\d+/,
-        /what is \d+ (plus|minus|times|divided by)/,
-        /calculate|solve|equation|formula/,
-        
-        // General knowledge
+        /\d+\s*[\+\-\*\/×÷]/, /calculate|solve|equation|formula/,
         /who is (the |a )?(president|prime minister|ceo)/,
         /capital of|country|world|history|geography/,
-        /when (was|did|is)/,
-        
-        // Tech support (non-portal)
         /windows|mac|iphone|android|computer|laptop/,
         /install|download|software/,
-        
-        // Personal advice
         /should i|what should|advice|recommend|suggest/,
         /relationship|dating|love|career/,
-        
-        // Entertainment
         /movie|song|music|game|sport/,
         /watch|play|listen/
       ];
-      
-      const isDefinitelyOutOfScope = outOfScopePatterns.some(pattern => pattern.test(lowerMessage));
-      
-      if (isDefinitelyOutOfScope || lowerMessage.length > 20) {
-        return `This question seems to be outside my current scope. I'll forward your message to a tutor for help — they'll get back to you shortly.
-
-In the meantime, I can help you with:
-• Course information and schedules
-• Grades and academic progress  
-• Notes and study materials
-• Calendar events and deadlines
-• Latest announcements
+      if (outOfScopePatterns.some(p => p.test(lowerMessage)) || lowerMessage.length > 20) {
+        return `This question seems outside my scope. I'll forward it to a tutor for help. Meanwhile, I can assist with:
+• Course info
+• Grades & performance
+• Notes & materials
+• Calendar events
+• Announcements
 
 Would you like to know about any of these?`;
       }
     }
 
-    // ==================== END: BEHAVIOR RULES IMPLEMENTATION ====================
+    // Quick helper for categories
+    const checkKeywords = (keywords: string[]) => containsAny(lowerMessage, keywords);
 
-    // Comprehensive question analysis
-    const isGreeting = containsAny(lowerMessage, ['hi', 'hello', 'hey', 'morning', 'afternoon', 'evening', 'greetings']);
-    const isPersonalInfo = containsAny(lowerMessage, ['my name', 'who am i', 'my profile', 'about me', 'profile']);
-    const isCourseQuery = containsAny(lowerMessage, ['course', 'subject', 'class', 'semester', 'study', 'studying']);
-    const isGradeQuery = containsAny(lowerMessage, ['grade', 'mark', 'score', 'result', 'performance', 'progress']);
-    const isEventQuery = containsAny(lowerMessage, ['event', 'schedule', 'deadline', 'today', 'tomorrow', 'week', 'due']);
-    const isAnnouncementQuery = containsAny(lowerMessage, ['announcement', 'news', 'notification', 'update', 'notice']);
-    const isNoteQuery = containsAny(lowerMessage, ['note', 'notes', 'search', 'find']);
-    const isHelpQuery = containsAny(lowerMessage, ['help', 'what can you', 'how can you', 'assist']);
-    
-    // Greetings
-    if (isGreeting) {
-      const displayName = getDisplayName();
+    // Greeting
+    if (checkKeywords(["hi","hello","hey","morning","afternoon","evening","greetings"])) {
       return `Hello ${displayName}! 👋 Welcome to the BITS Pilani student portal.
 
 I can help you with:
@@ -279,239 +206,117 @@ I can help you with:
 What would you like to know about today?`;
     }
 
-    // Help queries
-    if (isHelpQuery) {
+    // Help
+    if (checkKeywords(["help","what can you","how can you","assist"])) {
       return `Of course! I'm here to assist you with the BITS Pilani portal. 🎓
 
-**Here's what I can do for you:**
+📚 Academic Info: Courses, grades, progress
+📅 Schedule & Events: Deadlines, exams
+📝 Study Materials: Notes, resources
+📢 Updates & News: Announcements
+💡 Study Support: Tips, guidance
 
-📚 **Academic Info:**
-• Show your course progress and details
-• Check your grades and performance
-• Track assignment deadlines
-
-📅 **Schedule & Events:**
-• Today's events and deadlines
-• Upcoming exams and assignments
-• Weekly schedule overview
-
-📝 **Study Materials:**
-• Find your notes by topic or course
-• Search through study materials
-• Organize your academic content
-
-📢 **Updates & News:**
-• Latest announcements
-• Important notifications
-• University updates
-
-💡 **Study Support:**
-• Study tips and advice
-• Academic guidance
-• Progress tracking
-
-Just ask me anything like "What's due today?" or "Show my current courses" and I'll help you out!`;
+Ask me things like "What's due today?" or "Show my courses".`;
     }
 
-    // Personal information
-    if (isPersonalInfo) {
-      const displayName = getDisplayName();
+    // Profile
+    if (checkKeywords(["my name","who am i","my profile","about me","profile"])) {
       return `**YOUR PROFILE:**
 
-👤 **Name:** ${userProfile?.name || displayName}
-🎓 **Course:** ${userProfile?.course || 'Computer Science'}
-📧 **Email:** ${userProfile?.email || 'Not set'}
-📱 **Phone:** ${userProfile?.phone || 'Not set'}
-📚 **Current Semester:** ${userProfile?.semester || 'Not specified'}
+👤 Name: ${userProfile?.name || displayName}
+🎓 Course: ${userProfile?.course || 'Computer Science'}
+📧 Email: ${userProfile?.email || 'Not set'}
+📱 Phone: ${userProfile?.phone || 'Not set'}
+📚 Semester: ${userProfile?.semester || 'Not specified'}
 
-Need to update any of this information? You can edit your profile anytime!`;
+You can update this anytime in your profile.`;
     }
 
-    // Course queries
-    if (isCourseQuery) {
-      const ongoing = courses.filter(c => c.status === 'ongoing').length;
-      const completed = courses.filter(c => c.status === 'completed').length;
-      const upcoming = courses.filter(c => c.status === 'upcoming').length;
-      
-      if (lowerMessage.includes('current') || lowerMessage.includes('ongoing')) {
-        const ongoingCourses = courses.filter(c => c.status === 'ongoing');
-        if (ongoingCourses.length === 0) {
-          return "You don't have any ongoing courses right now. 🤔\n\nWant me to check your upcoming courses for next semester instead?";
-        }
-        
-        let response = `You're currently taking ${ongoingCourses.length} courses:\n\n`;
-        ongoingCourses.forEach((course, index) => {
-          response += `${index + 1}. ${course.title} (${course.progress || 0}%)\n`;
-        });
-        response += "\nWant details about any specific course?";
-        return response;
+    // Courses
+    if (checkKeywords(["course","subject","class","semester","study","studying"])) {
+      const ongoing = courses.filter(c => c.status === "ongoing");
+      const completed = courses.filter(c => c.status === "completed");
+      const upcoming = courses.filter(c => c.status === "upcoming");
+
+      if (lowerMessage.includes("current") || lowerMessage.includes("ongoing")) {
+        if (!ongoing.length) return "No ongoing courses right now. 🤔 Want me to check upcoming courses?";
+        return `You're currently taking ${ongoing.length} courses:\n` +
+               ongoing.map((c,i)=>`${i+1}. ${c.title} (${c.progress || 0}%)`).join("\n") +
+               "\n\nWant details about any specific course?";
       }
-      
-      return `I can help you with your courses! Here's your overview:
 
-📚 Currently studying: ${ongoing} course${ongoing !== 1 ? 's' : ''}
-✅ Completed: ${completed} course${completed !== 1 ? 's' : ''}
-⏳ Upcoming: ${upcoming} course${upcoming !== 1 ? 's' : ''}
+      return `Course overview:
+📚 Currently studying: ${ongoing.length}
+✅ Completed: ${completed.length}
+⏳ Upcoming: ${upcoming.length}
 
-What would you like to know more about?
-
-🔹 **Current courses** progress
-🔹 **Completed courses** and grades
-🔹 **Upcoming courses** for next semester
-
-Just ask!`;
+Ask for current, completed, or upcoming courses.`;
     }
 
-    // Grade queries
-    if (isGradeQuery) {
-      const completedCourses = courses.filter(c => c.status === 'completed' && c.grades.finalGrade && c.grades.finalGrade !== 'N/A');
-      
-      if (completedCourses.length === 0) {
-        return "You don't have any final grades yet - you're still working on your current courses! 💪\n\nOnce you complete your ongoing courses, I'll be able to show you your results. Keep up the great work!";
-      }
+    // Grades
+    if (checkKeywords(["grade","mark","score","result","performance","progress"])) {
+      const completedCourses = courses.filter(c => c.status === "completed" && c.grades.finalGrade && c.grades.finalGrade !== "N/A");
+      if (!completedCourses.length) return "No final grades yet. Keep up the great work! 💪";
 
-      const excellentGrades = completedCourses.filter(c => ['A', 'A+', 'A-'].includes(c.grades.finalGrade || '')).length;
-      
-      let response = "";
-      if (excellentGrades > 0) {
-        response += `Excellent work! 🌟 You've earned ${excellentGrades} A-grade${excellentGrades > 1 ? 's' : ''} so far.\n\n`;
-      } else {
-        response += `You've completed ${completedCourses.length} course${completedCourses.length > 1 ? 's' : ''}! 📚\n\n`;
-      }
-      
-      response += `You've completed ${completedCourses.length} out of ${courses.length} total courses.\n\nWould you like to see grades for a specific course or need study tips for your current ones?`;
+      const excellent = completedCourses.filter(c => ["A","A+","A-"].includes(c.grades.finalGrade || "")).length;
+      let response = excellent > 0 ? `Excellent! 🌟 ${excellent} A-grade${excellent>1?'s':''} so far.\n\n` : `Completed ${completedCourses.length} courses.\n\n`;
+      response += `Total completed: ${completedCourses.length} of ${courses.length}.\nWant grades for a specific course or study tips?`;
       return response;
     }
 
-    // Event queries
-    if (isEventQuery) {
-      if (lowerMessage.includes('today')) {
-        const todayEvents = events.filter(event => event.date === todayStr);
-        if (todayEvents.length === 0) {
-          return "You have a free day today! 🎉 No scheduled events. Perfect time to catch up on studies or work on assignments.\n\nWould you like me to show you what's coming up this week instead?";
-        }
-        
-        let response = `You have ${todayEvents.length} event${todayEvents.length > 1 ? 's' : ''} today:\n\n`;
-        todayEvents.slice(0, 3).forEach((event, index) => {
-          const typeIcon = event.type === 'exam' ? '📝' : event.type === 'assignment' ? '📋' : '📅';
-          response += `${index + 1}. ${typeIcon} ${event.title} at ${event.time}\n`;
-        });
-        
-        return response;
+    // Events
+    if (checkKeywords(["event","schedule","deadline","today","tomorrow","week","due"])) {
+      const todayEvents = events.filter(e => e.date === todayStr);
+      if (lowerMessage.includes("today")) {
+        if (!todayEvents.length) return "Free today! 🎉 No events. Want me to show this week's schedule?";
+        return `Today's events (${todayEvents.length}):\n` +
+               todayEvents.slice(0,3).map((e,i)=>`${i+1}. ${e.type==="exam"?"📝":e.type==="assignment"?"📋":"📅"} ${e.title} at ${e.time}`).join("\n");
       }
-      
-      const upcomingCount = events.filter(event => new Date(event.date) >= today).length;
-      return `I can help you with your schedule! You have ${upcomingCount} upcoming events.\n\nWhat specifically would you like to know about?\n\n🗓️ **Today's events**\n📅 **This week's schedule**\n📝 **Upcoming exams**\n📋 **Assignment deadlines**\n\nJust ask me about any of these!`;
+      return `You have ${events.filter(e=>new Date(e.date)>=new Date()).length} upcoming events. Ask for today's events, weekly schedule, exams, or assignments.`;
     }
 
-    // Announcement queries
-    if (isAnnouncementQuery) {
-      if (announcements.length === 0) {
-        return "All quiet on the announcements front! 📢\n\nNo new announcements right now. I'll let you know as soon as something important comes up!";
-      }
-
-      const unreadCount = announcements.filter(a => !a.read).length;
-      const latestAnnouncement = announcements[0];
-      
-      let response = "";
-      if (unreadCount > 0) {
-        response += `You have ${unreadCount} unread announcement${unreadCount > 1 ? 's' : ''}!\n\n`;
-      }
-      
-      response += `**Latest update:** ${latestAnnouncement.title}\n📅 ${latestAnnouncement.time}\n\n`;
-      response += "Would you like me to read the full announcement or show you all unread ones?";
-      
-      return response;
+    // Announcements
+    if (checkKeywords(["announcement","news","notification","update","notice"])) {
+      if (!announcements.length) return "No new announcements right now. 📢";
+      const unread = announcements.filter(a=>!a.read).length;
+      const latest = announcements[0];
+      return `${unread?`You have ${unread} unread announcement(s)!\n\n`:''}Latest: ${latest.title} (${latest.time})\nWant me to show all unread announcements?`;
     }
 
-    // Note queries
-    if (isNoteQuery) {
-      if (notes.length > 0) {
-        const favoriteCount = notes.filter(n => n.favorite).length;
-        
-        let response = `You have ${notes.length} note${notes.length > 1 ? 's' : ''} in your collection! 📚\n\n`;
-        
-        if (favoriteCount > 0) {
-          response += `⭐ ${favoriteCount} favorite${favoriteCount > 1 ? 's' : ''}\n`;
-        }
-        
-        response += "**Your recent notes:**\n";
-        notes.slice(0, 3).forEach((note, index) => {
-          const favoriteIcon = note.favorite ? '⭐ ' : '';
-          response += `${index + 1}. ${favoriteIcon}${note.title}\n`;
-        });
-        
-        response += "\nWant me to help you find something specific? Just tell me what you're looking for!";
-        return response;
-      }
-
-      return `You haven't created any notes yet, but I can help you get started! 📝\n\nYou can create notes for:\n• Lecture summaries\n• Assignment details\n• Study materials\n• Important reminders\n\nWant some tips on effective note-taking?`;
+    // Notes
+    if (checkKeywords(["note","notes","search","find"])) {
+      if (!notes.length) return `You haven't created notes yet. 📝 I can help you get started.`;
+      const favCount = notes.filter(n=>n.favorite).length;
+      return `You have ${notes.length} notes${favCount?`, ${favCount} favorite`:""}.\nRecent notes:\n` +
+             notes.slice(0,3).map((n,i)=>`${i+1}. ${n.favorite?"⭐ ":""}${n.title}`).join("\n") +
+             `\n\nWant me to find something specific?`;
     }
 
-    // Question type fallback
-    if (lowerMessage.includes('?')) {
-      return `Great question! 🤔 I want to give you the most helpful answer.
+    // Fallback for questions
+    if (lowerMessage.includes("?")) {
+      return `Great question! 🤔 I can assist you with:
 
-Here are some ways I can assist you:
-
-🔍 **Search & Find:**
-• "Find my notes about databases"
-• "What assignments are due?"
-• "Show me upcoming events"
-
-📊 **Academic Status:**
-• "How are my grades?"
-• "What courses am I taking?"
-• "What's my progress?"
-
-📅 **Schedule Info:**
-• "What's happening today?"
-• "What's due this week?"
-• "When is my next exam?"
-
-Could you try rephrasing your question using one of these formats? I'm here to help! 😊`;
+🔍 Search: "Find notes on X", "Show assignments due"
+📊 Academic: "Grades", "Course progress"
+📅 Schedule: "Today's events", "Next exam"
+Please rephrase your question in one of these ways. 😊`;
     }
 
-    // Intelligent default responses
-    const displayName = getDisplayName();
-    const helpfulResponses = [
-      `I'd love to help you, ${displayName}! 😊 I have access to all your BITS Pilani academic information.
-
-**Try asking me:**
-• "What courses am I taking?"
-• "What's due today?"
-• "Show my grades"
-• "Any new announcements?"
-• "Find my notes about..."
-
-What would you like to know?`,
-      
-      `Hi ${displayName}! I'm your AI study assistant. 🤖
-
-**I can help you with:**
-📚 Course information and progress
-📅 Schedule and deadlines
-📝 Finding your notes and materials
-📢 Latest announcements
-📊 Academic performance
-
-What can I help you with today?`,
-      
-      `Ready to assist with your studies, ${displayName}! 🎓
-
-**Popular requests:**
+    // Default helpful responses
+    const defaultResponses = [
+      `I'd love to help you, ${displayName}! 😊 Ask me about courses, grades, events, notes, or announcements.`,
+      `Hi ${displayName}! 🤖 I can help with academic info, schedules, study materials, and updates.`,
+      `Ready to assist, ${displayName}! 🎓 Popular requests:
 🗓️ "What's happening today?"
 📈 "How am I doing in my courses?"
-🔍 "Find notes about algorithms"
-📱 "Any important updates?"
-💡 "Give me study tips"
-
-Feel free to ask me anything about your academic life!`
+🔍 "Find notes on algorithms"
+💡 "Study tips"`
     ];
-    
-    return helpfulResponses[Math.floor(Math.random() * helpfulResponses.length)];
+
+    return defaultResponses[Math.floor(Math.random() * defaultResponses.length)];
   };
 
+  // Send message handler
   const handleSend = () => {
     if (!message.trim()) return;
 
@@ -522,14 +327,14 @@ Feel free to ask me anything about your academic life!`
       timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
     };
 
-    const aiResponse = {
+    const aiMessage = {
       id: (Date.now() + 1).toString(),
       type: "assistant",
       content: generateAIResponse(message),
       timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
     };
 
-    setMessages(prev => [...prev, userMessage, aiResponse]);
+    setMessages(prev => [...prev, userMessage, aiMessage]);
     setMessage("");
   };
 
@@ -556,8 +361,7 @@ Feel free to ask me anything about your academic life!`
                     </div>
                     <div>
                       <h3 className="text-sm sm:text-base font-semibold flex items-center gap-2">
-                        BITS-Bot 
-                        <Cpu className="w-3 h-3 sm:w-4 sm:h-4" />
+                        BITS-Bot <Cpu className="w-3 h-3 sm:w-4 sm:h-4" />
                       </h3>
                       <p className="text-xs sm:text-sm opacity-90 text-[rgba(244,245,248,1)]">AI Assistant</p>
                     </div>
@@ -575,27 +379,17 @@ Feel free to ask me anything about your academic life!`
 
               {/* Messages */}
               <div className="flex-1 p-3 sm:p-4 overflow-y-auto space-y-3 sm:space-y-4 bg-gray-50/30">
-                {messages.map((msg) => (
-                  <div
-                    key={msg.id}
-                    className={`flex ${msg.type === "user" ? "justify-end" : "justify-start"}`}
-                  >
-                    <div
-                      className={`max-w-[85%] p-2 sm:p-3 rounded-lg ${
-                        msg.type === "user"
-                          ? "bg-university-primary text-white"
-                          : "bg-white border border-university-border text-gray-800 shadow-sm"
-                      }`}
-                    >
-                      <p className={`text-xs sm:text-sm leading-relaxed whitespace-pre-line ${
-                        msg.type === "user" ? "text-white" : "text-gray-800"
-                      }`}>{msg.content}</p>
-                      <p className={`text-xs mt-1 sm:mt-2 opacity-70 ${
-                        msg.type === "user" ? "text-white" : "text-gray-600"
-                      }`}>{msg.timestamp}</p>
+                {messages.map(msg => {
+                  const isUser = msg.type === "user";
+                  return (
+                    <div key={msg.id} className={`flex ${isUser ? "justify-end" : "justify-start"}`}>
+                      <div className={`max-w-[85%] p-2 sm:p-3 rounded-lg ${isUser ? "bg-university-primary text-white" : "bg-white border border-university-border text-gray-800 shadow-sm"}`}>
+                        <p className={`text-xs sm:text-sm leading-relaxed whitespace-pre-line ${isUser ? "text-white" : "text-gray-800"}`}>{msg.content}</p>
+                        <p className={`text-xs mt-1 sm:mt-2 opacity-70 ${isUser ? "text-white" : "text-gray-600"}`}>{msg.timestamp}</p>
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  );
+                })}
                 <div ref={messagesEndRef} />
               </div>
 
@@ -605,8 +399,8 @@ Feel free to ask me anything about your academic life!`
                   <Input
                     placeholder="Ask about courses, grades, events, notes..."
                     value={message}
-                    onChange={(e) => setMessage(e.target.value)}
-                    onKeyPress={(e) => e.key === "Enter" && handleSend()}
+                    onChange={e => setMessage(e.target.value)}
+                    onKeyPress={e => e.key === "Enter" && handleSend()}
                     className="flex-1 rounded-lg text-xs sm:text-sm border-university-border focus:border-university-primary focus:ring-2 focus:ring-university-primary/20"
                   />
                   <Button
@@ -625,25 +419,12 @@ Feel free to ask me anything about your academic life!`
 
       {/* Floating Action Button */}
       <div className="fixed bottom-6 right-6 z-50">
-        <motion.div
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-        >
+        <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.95 }}>
           <Button
-            onClick={() => setIsExpanded(!isExpanded)}
-            className="w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-university-primary hover:bg-university-secondary shadow-lg transition-all duration-300 relative"
+            className="w-14 h-14 rounded-full bg-university-primary hover:bg-university-secondary text-white shadow-2xl flex items-center justify-center"
+            onClick={() => setIsExpanded(prev => !prev)}
           >
-            {isExpanded ? (
-              <X className="w-5 h-5 sm:w-6 sm:h-6" />
-            ) : (
-              <>
-                <Bot className="w-5 h-5 sm:w-6 sm:h-6" />
-                <div className="absolute top-1.5 right-1.5 sm:top-2 sm:right-2 w-2.5 h-2.5 sm:w-3 sm:h-3 bg-green-400 rounded-full animate-pulse border-2 border-white"></div>
-                <Badge className="absolute -top-0.5 -right-0.5 sm:-top-1 sm:-right-1 w-4 h-4 sm:w-5 sm:h-5 p-0 bg-green-500 text-white text-xs flex items-center justify-center rounded-full">
-                  AI
-                </Badge>
-              </>
-            )}
+            <MessageCircle className="w-6 h-6" />
           </Button>
         </motion.div>
       </div>
