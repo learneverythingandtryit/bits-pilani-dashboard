@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader } from "./ui/card";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "./ui/dialog";
 import { ScrollArea } from "./ui/scroll-area";
 import { Separator } from "./ui/separator";
-import { toast } from "sonner@2.0.3";
+//import { toast } from "sonner@2.0.3";
 import { copyWithFeedback, copyToClipboardSilent } from "../utils/clipboard";
 import { projectId, publicAnonKey } from "../utils/supabase/info";
 
