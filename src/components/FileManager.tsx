@@ -4,7 +4,7 @@ import { Button } from "./ui/button";
 import { Card, CardContent } from "./ui/card";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "./ui/dialog";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "./ui/alert-dialog";
-import { toast } from "sonner@2.0.3";
+//import { toast } from "sonner@2.0.3";
 import { projectId, publicAnonKey } from "../utils/supabase/info";
 
 interface FileManagerProps {
