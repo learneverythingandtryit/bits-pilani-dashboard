@@ -3,6 +3,7 @@ import react from '@vitejs/plugin-react';
 
 export default defineConfig({
   plugins: [react()],
+  base: '/', // 👈 Ensures correct routing and asset paths for Render
   build: {
     outDir: 'dist',
     sourcemap: true,
@@ -15,7 +16,7 @@ export default defineConfig({
             './components/ui/card',
             './components/ui/dialog',
           ],
-          'jspdf': ['jspdf'],
+          jspdf: ['jspdf'],
         },
       },
     },
