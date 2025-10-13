@@ -25,10 +25,21 @@
     "paths": {
       "@/*": ["./*"]
     },
-    
+
     /* Types */
     "types": ["vite/client"]
   },
-  "include": ["**/*.ts", "**/*.tsx"],
-  "exclude": ["node_modules", "dist", "supabase/**/*", "public/**/*", "server/**/*"]
+
+  /* ✅ Include only client-side code */
+  "include": ["src/**/*.ts", "src/**/*.tsx"],
+
+  /* ✅ Exclude backend + build output */
+  "exclude": [
+    "node_modules",
+    "dist",
+    "supabase/**/*",
+    "public/**/*",
+    "server/**/*",
+    "src/server/**/*"   // 👈 Add this line to ignore your Deno server files
+  ]
 }
