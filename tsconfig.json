@@ -1,45 +1,27 @@
 {
   "compilerOptions": {
     "target": "ES2020",
-    "useDefineForClassFields": true,
     "lib": ["ES2020", "DOM", "DOM.Iterable"],
     "module": "ESNext",
-    "skipLibCheck": true,
-
-    /* Bundler mode */
-    "moduleResolution": "bundler",
-    "allowImportingTsExtensions": true,
+    "moduleResolution": "Node",
     "resolveJsonModule": true,
     "isolatedModules": true,
+    "allowJs": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "skipLibCheck": true,
+    "strict": true,
     "noEmit": true,
     "jsx": "react-jsx",
-
-    /* Linting */
-    "strict": false,
-    "noUnusedLocals": false,
-    "noUnusedParameters": false,
-    "noFallthroughCasesInSwitch": true,
-
-    /* Path aliases */
+    "types": ["node"],
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./*"]
-    },
-
-    /* Types */
-    "types": ["vite/client"]
+      "@/*": ["src/*"],
+      "@components/*": ["src/components/*"],
+      "@utils/*": ["src/utils/*"],
+      "@pages/*": ["src/pages/*"]
+    }
   },
-
-  /* ✅ Include only client-side code */
-  "include": ["src/**/*.ts", "src/**/*.tsx"],
-
-  /* ✅ Exclude backend + build output */
-  "exclude": [
-    "node_modules",
-    "dist",
-    "supabase/**/*",
-    "public/**/*",
-    "server/**/*",
-    "src/server/**/*"   // 👈 Add this line to ignore your Deno server files
-  ]
+  "include": ["src"],
+  "exclude": ["node_modules", "dist", ".vercel"]
 }
