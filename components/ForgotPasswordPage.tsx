@@ -3,7 +3,6 @@ import { ArrowLeft, Mail } from "lucide-react";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
-import image_f45565175c62bcc651936992a46b956588d7543e from 'figma:asset/f45565175c62bcc651936992a46b956588d7543e.png';
 
 interface ForgotPasswordPageProps {
   onBack: () => void;
@@ -58,13 +57,8 @@ export function ForgotPasswordPage({ onBack }: ForgotPasswordPageProps) {
         <div className="w-full max-w-md">
           {/* Logo */}
           <div className="text-center mb-8">
-            <div className="w-full max-w-sm mx-auto mb-6">
-              <img
-                src={image_f45565175c62bcc651936992a46b956588d7543e}
-                alt="BITS Pilani Work Integrated Learning Programmes"
-                className="w-full h-auto object-contain"
-              />
-            </div>
+            <h1 className="text-2xl font-bold text-[#191f5e] mb-2">BITS Pilani</h1>
+            <p className="text-sm text-[#6B7280]">Work Integrated Learning Programmes</p>
           </div>
 
           {/* Back Button */}
